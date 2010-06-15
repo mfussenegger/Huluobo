@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+      {{ cfg.title }}
+    </title>
+
+    {% if cfg.debug %}
+      <link href="{{ static_url('css/reset.css') }}" rel="stylesheet" type="text/css" />
+      <link href="{{ static_url('css/styles.css') }}" rel="stylesheet" type="text/css" />
+    {% else %}
+      <link href="{{ static_url('css/all.css') }}" rel="stylesheet" type="text/css" />
+    {% endif %}
+
+    {% if cfg.debug %}
+      <script src="{{ static_url('js/jquery.js') }}" style="javascript" type="text/javascript" ></script>
+    {% else %}
+      <script src="{{ static_url('js/all.js') }}" style="javascript" type="text/javascript" ></script>
+    {% endif %}
+
+    {% block head %}
+    {% endblock %}
+  </head>
+
+  <body>
+    <div id="site">
+      <div id="topmenu">
+
+      </div>
+
+      <div id="leftmenu">
+      </div>
+
+      <div id="content">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
+
+  </body>
+</html>
