@@ -32,8 +32,8 @@ posts_table = Table('posts', metadata,
         Column('summary', UnicodeText),
         Column('content', UnicodeText),
         Column('read', Boolean, default=False),
-        Column('published', DateTime, default=datetime.now(), nullable=False),
-        Column('updated', DateTime, onupdate=datetime.now(), nullable=False),
+        Column('published', DateTime, nullable=False),
+        Column('updated', DateTime, nullable=False),
     )
 
 class Post(object):

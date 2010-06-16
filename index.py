@@ -11,7 +11,7 @@ from jinja2 import Environment, FileSystemLoader
 from os.path import dirname, join, isfile
 
 from base import NoDestinationHandler
-from handler import (Index, Refresh)
+from handler import (Index, Refresh, MarkAsRead)
 
 define('port', default=8080, help='run on the given port', type=int)
 
@@ -22,6 +22,7 @@ class Application(tornado.web.Application):
         handlers = (
                 (r'/', Index)
                 ,(r'/refresh/?', Refresh)
+                ,(r'/mark_as_read/?', MarkAsRead)
                 ,(r'/static/(.*)', tornado.web.StaticFileHandler,
                     { 'path' : static_path })
                 ,(r'/.*$', NoDestinationHandler)

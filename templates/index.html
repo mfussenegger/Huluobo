@@ -2,6 +2,16 @@
 
 {% block content %}
 
-  <p>Nothing to see here.</p>
+  {% for post in posts %}
+
+    <div>
+      <h2>{{ post.title }}</h2>
+      <p>{{ post.summary }}</p>
+      <div style="display:none;">
+        {{ post.content }}
+      </div>
+    </div>
+
+  {% endfor %}
 
 {% endblock %}
