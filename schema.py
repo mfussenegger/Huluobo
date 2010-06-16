@@ -11,11 +11,12 @@ engine = create_engine(url, **params)
 Session = scoped_session(sessionmaker(engine))
 metadata = MetaData()
 
-feeds_table = Table('feeds', metadata,
-        Column('id', Integer, primary_key=True, autoincrement=True),
-        Column('title', Unicode(30), nullable=False),
-        Column('url', String(2038), nullable=False),
-        Column('description', Unicode(300)),
+feeds_table = Table('feeds', metadata
+        ,Column('id', Integer, primary_key=True, autoincrement=True)
+        ,Column('title', Unicode(30), nullable=False)
+        ,Column('url', String(2038), nullable=False)
+        ,Column('updated', DateTime, nullable=True)
+        ,Column('description', Unicode(300))
     )
 
 class Feed(object):
@@ -24,14 +25,15 @@ class Feed(object):
 posts_table = Table('posts', metadata,
         Column('id', Integer, primary_key=True, autoincrement=True),
         Column('feed_id', ForeignKey('feeds.id'), nullable=False),
+        Column('entry_id', String(300), nullable=False),
         Column('title', Unicode(40), nullable=False),
         Column('link', String(2038), nullable=False),
         Column('author', Unicode(40), nullable=False),
         Column('summary', UnicodeText),
         Column('content', UnicodeText),
         Column('read', Boolean, default=False),
-        Column('published', DateTime, default=datetime.now()),
-        Column('updated', DateTime, onupdate=datetime.now()),
+        Column('published', DateTime, default=datetime.now(), nullable=False),
+        Column('updated', DateTime, onupdate=datetime.now(), nullable=False),
     )
 
 class Post(object):
@@ -61,6 +63,7 @@ mapper(Post, posts_table)
 mapper(Tag, tags_table)
 
 def main():
+    metadata.drop_all(engine)
     metadata.create_all(engine)
     print('created tables')
 

@@ -11,7 +11,7 @@ from jinja2 import Environment, FileSystemLoader
 from os.path import dirname, join, isfile
 
 from base import NoDestinationHandler
-from handler import (Index)
+from handler import (Index, Refresh)
 
 define('port', default=8080, help='run on the given port', type=int)
 
@@ -20,14 +20,11 @@ class Application(tornado.web.Application):
         static_path = join(dirname(__file__), 'static')
         
         handlers = (
-                (r'/', Index),
-#                (r'/feeds/?', FeedIndex),
-#                (r'/feeds/add/?', FeedAdd),
-#                (r'/feeds/edit/?', FeedEdit),
-#                (r'/feeds/delete/?', FeedDelete),
-                (r'/static/(.*)', tornado.web.StaticFileHandler,
-                    { 'path' : static_path }),
-                (r'/.*$', NoDestinationHandler)
+                (r'/', Index)
+                ,(r'/refresh/?', Refresh)
+                ,(r'/static/(.*)', tornado.web.StaticFileHandler,
+                    { 'path' : static_path })
+                ,(r'/.*$', NoDestinationHandler)
             )
         settings = dict(
                 title = 'Huluobo',
@@ -38,7 +35,9 @@ class Application(tornado.web.Application):
 
         template_path = join(dirname(__file__), 'templates')
         tornado.web.Application.__init__(self, handlers, **settings)
-        self.env = Environment(loader=FileSystemLoader(template_path))
+        self.env = Environment(loader=FileSystemLoader(template_path)
+                ,extensions=['jinja2.ext.i18n'])
+        self.env.install_null_translations(newstyle=True)
         self.env.globals['cfg'] = settings
 
 

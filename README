@@ -1,0 +1,9 @@
+
+When I am grown up I will become an atom/rss reader. Pretty awesome, huh?
+
+Requirements:
+    python >= 2.6
+    python-tornadoweb
+    python-feedparser
+    python-jinja >= 2.5
+    python-sqlalchemy >= 0.6 (might work with 0.5 too)

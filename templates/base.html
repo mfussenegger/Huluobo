@@ -24,12 +24,29 @@
   </head>
 
   <body>
-    <div id="site">
-      <div id="topmenu">
-
+    <div id="page">
+      <div id="menu_top">
+        <ul>
+          <li>
+            <a href="/refresh/">{{ _('Refresh') }}</a>
+          </li>
+          <li>
+            <a href="/mark_as_read/">{{ _('Mark everything as read') }}</a>
+          </li>
+        </ul>
       </div>
 
-      <div id="leftmenu">
+      <div id="menu_left">
+        <ul id="feed_actions">
+          <li>
+            <a href="/feeds/add/">{{ _('Add') }}</a>
+          </l>
+        </li>
+
+        <ul id="feed_list">
+          <li>#1</li>
+          <li>#2</li>
+        </ul>
       </div>
 
       <div id="content">

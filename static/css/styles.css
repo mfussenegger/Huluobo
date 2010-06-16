@@ -4,3 +4,83 @@ body
   font-family: verdana;
   font-size: 1em;
 }
+
+h1, h2, h3, h4, h5 {
+  padding-top: 0.1em;
+  padding-bottom: 0.2em;
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.4em;
+}
+
+h3 {
+  font-size: 1.3em;
+}
+
+h4 {
+  font-size: 1.2em;
+}
+
+h5 {
+  font-size: 1.1em;
+}
+
+div#page 
+{
+  width: 980px;
+  margin: 0 auto 1em;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+
+  min-height: 480px;
+}
+
+div#menu_top {
+  margin-left: 2em;
+}
+
+div#menu_top li {
+  display: inline;
+}
+
+div#menu_top a {
+  display: inline-block;
+  height: 1.2em;
+  width: 16em;
+  text-align: center;
+  text-decoration: none;
+
+  border-width: 0 1px 1px 1px;
+  border-color: #000;
+  border-style: solid;
+
+  border-bottom-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+
+  border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+}
+
+div#menu_top a:hover {
+  background-color: #ddd;
+}
+
+div#menu_left {
+  padding-top: 1em;
+  padding-left: 0.5em;
+  float: left;
+  width: 200px;
+}
+
+div#content {
+  width: 780px;
+  padding: 1em;
+}
