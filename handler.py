@@ -4,8 +4,9 @@
 from sqlalchemy import desc
 from base import Base
 from schema import Session, Feed, Post
-from datetime import datetime
-import time
+from datetime import datetime as dt
+from time import mktime
+
 import feedparser
 
 class Index(Base):
@@ -59,54 +60,42 @@ class Refresh(Base):
     def get(self):
         for lfeed in Session.query(Feed).all():
             d = feedparser.parse(lfeed.url)
-            if d.feed.has_key('updated_parsed'):
-                rfeed_updated = datetime.fromtimestamp(time.mktime(
-                    d.feed.updated_parsed))
-            elif d.feed.has_key('date_parsed'):
-                rfeed_updated = datetime.fromtimestamp(time.mktime(
-                    d.feed.date_parsed))
-            else:
-                rfeed_updated = None
+            rfeed_updated = d.feed.get('updated_parsed', None) or \
+                    d.feed.get('date_parsed', None)
+            if rfeed_updated:
+                rfeed_updated = dt.fromtimestamp(mktime(rfeed_updated))
 
             if rfeed_updated and lfeed.updated == rfeed_updated:
                 continue
             for rpost in d.entries:
-                if rpost.has_key('updated_parsed'):
-                    rpost_updated = datetime.fromtimestamp(time.mktime(
-                        rpost.updated_parsed))
-                elif rpost.has_key('date_parsed'):
-                    rpost_updated = datetime.fromtimestamp(time.mktime(
-                        rpost.date_parsed))
-                else:
-                    rpost_updated = None
+                rpost_updated = rpost.get('updated_parsed', None) or \
+                        rpost.get('date_parsed', None)
+                if rpost_updated:
+                    rpost_updated = dt.fromtimestamp(mktime(rpost_updated))
 
-                if hasattr(rpost, 'published_parsed'):
-                    rpost_published = datetime.fromtimestamp(time.mktime(
-                        rpost.published_parsed))
-                else:
-                    rpost_published = datetime.now()
+                rpost_pubd = rpost.get('published_parsed', None)
+                rpost_pubd = rpost_pubd and dt.fromtimestamp(mktime(
+                    rpost.published_parsed)) or dt.now()
 
                 lpost = Session.query(Post).filter(
-                            Post.entry_id == rpost.id).filter(
-                                    Post.feed_id == lfeed.id).first()
+                            Post.entry_id == rpost.id and 
+                            Post.feed_id == lfeed.id).first()
                 if lpost:
                     if rpost_updated and lpost.updated == rpost_updated:
                         continue
                 else:
                     lpost = Post()
-                    Session.add(lpost)
+                    lfeed.posts.append(lpost)
                 lpost.read = False
-                lpost.feed_id = lfeed.id
                 lpost.entry_id = rpost.id
                 lpost.title = rpost.title
-                lpost.author = d.feed.get('author', '')
+                lpost.author = d.feed.get('author', 'unknown')
                 lpost.link = rpost.link
-                lpost.published = rpost_published
+                lpost.published = rpost_pubd
                 lpost.updated = rpost_updated
                 lpost.summary = rpost.get('summary')
                 lpost.content = rpost.has_key('content') and \
                     rpost.content[0].value
             lfeed.updated = rfeed_updated
         Session.commit()
-        self.redirect('/')
-        return
+        return self.redirect('/')

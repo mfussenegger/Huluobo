@@ -3,7 +3,7 @@
 
 from sqlalchemy import (create_engine, MetaData, Table, Column, Integer,
         String, ForeignKey, Unicode, DateTime, UnicodeText, Boolean)
-from sqlalchemy.orm import mapper, scoped_session, sessionmaker
+from sqlalchemy.orm import mapper, scoped_session, sessionmaker, relation
 from datetime import datetime
 from config import url, params
 
@@ -58,14 +58,23 @@ posttags_table = Table('posttags', metadata,
         Column('tag_id', ForeignKey('tags.id'), primary_key=True),
     )
 
-mapper(Feed, feeds_table)
+mapper(Feed, feeds_table, properties={
+    'posts' : relation(Post,
+        backref='feed',
+        cascade='all, delete, delete-orphan')
+    })
 mapper(Post, posts_table)
 mapper(Tag, tags_table)
 
 def main():
-    metadata.drop_all(engine)
-    metadata.create_all(engine)
-    print('created tables')
+    if raw_input('Type YES to drop and recreate all tables: ') == 'YES':
+        metadata.drop_all(engine)
+        print('Dropped tables.')
+        metadata.create_all(engine)
+        print('Created tables.')
+    else:
+        print('Do nothing.')
+
 
 if __name__ == '__main__':
     main()

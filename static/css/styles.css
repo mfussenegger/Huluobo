@@ -129,7 +129,7 @@ a.button {
   margin-left: 0.4em;
   margin-bottom: 1.1em;
   border: 1px solid #ccc;
-  display: block;
+  display: inline-block;
   width: 12em;
   text-decoration: none;
   color: #000;
