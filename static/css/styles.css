@@ -1,7 +1,7 @@
 
 body 
 {
-  font-family: verdana;
+  font-family: 'Linux Libertine', Palatino, 'Palatino Linotype', 'Book Antiqua', 'Georgia', 'Times New Roman', serif;
   font-size: 1em;
 }
 
@@ -11,24 +11,21 @@ h1, h2, h3, h4, h5 {
 }
 
 h1 {
-  font-size: 1.5em;
-}
-
-h2 {
   font-size: 1.4em;
 }
 
-h3 {
+h2 {
   font-size: 1.3em;
 }
 
-h4 {
+h3 {
   font-size: 1.2em;
 }
 
-h5 {
+h4 {
   font-size: 1.1em;
 }
+
 
 div#page 
 {
@@ -43,6 +40,7 @@ div#page
 
 div#menu_top {
   margin-left: 2em;
+  display: block;
 }
 
 div#menu_top li {
@@ -52,7 +50,7 @@ div#menu_top li {
 div#menu_top a {
   display: inline-block;
   height: 1.2em;
-  width: 16em;
+  width: 13em;
   text-align: center;
   text-decoration: none;
 
@@ -74,6 +72,7 @@ div#menu_top a:hover {
 }
 
 div#menu_left {
+  display: table-cell;
   padding-top: 1em;
   padding-left: 0.5em;
   float: left;
@@ -81,6 +80,88 @@ div#menu_left {
 }
 
 div#content {
+  display: table-cell;
   width: 780px;
   padding: 1em;
+}
+
+fieldset {
+  border: 1px dashed #ccc;
+  padding: 1em;
+}
+
+legend {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+form label {
+  display: block;
+  font-weight: bold;
+  width: 12em;
+}
+
+input {
+  font-family: 'Linux Libertine', Palatino, 'Palatino Linotype', 'Book Antiqua', 'Georgia', 'Times New Roman', serif;
+  font-size: 1em;
+  margin-left: 0.4em;
+  margin-bottom: 1.1em;
+  border: 1px solid #ccc;
+}
+
+input:active, input:focus {
+  border: 1px solid #800517;
+}
+
+input[type=text] {
+  width: 16em;
+}
+
+input.long {
+  width: 32em;
+}
+
+input[type=submit] {
+  width: 12em;
+}
+
+a.button {
+  margin-left: 0.4em;
+  margin-bottom: 1.1em;
+  border: 1px solid #ccc;
+  display: block;
+  width: 12em;
+  text-decoration: none;
+  color: #000;
+  text-align: center;
+  line-height: 1.3em;
+  background-color: #ddd;
+}
+
+a.button:hover {
+  background-color: #eee;
+}
+
+a:hover {
+  color: #800517;
+}
+
+label.error {
+  color: #800517;
+  display: inline-block;
+  padding-left: 0.2em;
+}
+
+input.error {
+  background-color: #FBB117;
+}
+
+p {
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px dashed #ccc;
 }

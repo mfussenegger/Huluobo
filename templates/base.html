@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>
       {{ cfg.title }}
     </title>
 
+    <link rel="shortcut icon" href="/favicon.ico">
     {% if cfg.debug %}
-      <link href="{{ static_url('css/reset.css') }}" rel="stylesheet" type="text/css" />
-      <link href="{{ static_url('css/styles.css') }}" rel="stylesheet" type="text/css" />
+      <link rel="stylesheet" href="{{ static_url('css/reset.css') }}" >
+      <link rel="stylesheet" href="{{ static_url('css/styles.css') }}" >
     {% else %}
-      <link href="{{ static_url('css/all.css') }}" rel="stylesheet" type="text/css" />
+      <link rel="stylesheet" href="{{ static_url('css/all.css') }}" >
     {% endif %}
 
     {% if cfg.debug %}
-      <script src="{{ static_url('js/jquery.js') }}" style="javascript" type="text/javascript" ></script>
+      <script type="text/javascript" text="javascript" src="{{ static_url('js/jquery.js') }}" ></script>
+      <script type="text/javascript" text="javascript" src="{{ static_url('js/jquery.validate.js') }}" ></script>
     {% else %}
-      <script src="{{ static_url('js/all.js') }}" style="javascript" type="text/javascript" ></script>
+      <script type="text/javascript" text="javascript" src="{{ static_url('js/all.js') }}" ></script>
     {% endif %}
 
     {% block head %}
@@ -28,25 +30,28 @@
       <div id="menu_top">
         <ul>
           <li>
+            <a href="/">{{ _('Index') }}</a>
+          </li>
+          <li>
             <a href="/refresh/">{{ _('Refresh') }}</a>
           </li>
           <li>
             <a href="/mark_as_read/">{{ _('Mark everything as read') }}</a>
           </li>
+          <li>
+            <a href="/feeds/add">{{ _('Add Feed') }}</a>
+          </li>
         </ul>
       </div>
 
       <div id="menu_left">
-        <ul id="feed_actions">
-          <li>
-            <a href="/feeds/add/">{{ _('Add') }}</a>
-          </l>
-        </li>
 
         <ul id="feed_list">
-          <li>#1</li>
-          <li>#2</li>
+          {% for feed in feeds %}
+          <li><a href="/feeds/edit/{{ feed.id }}/">{{ feed.title|e }}</a></li>
+          {% endfor %}
         </ul>
+
       </div>
 
       <div id="content">

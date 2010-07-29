@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<script type="text/javascript">
+  $(function() {
+      $('form').validate();
+  });
+</script>
+
+
+{% endblock %}
+
+
+{% block content %}
+
+<form action="{{ request.path }}" method="post" >
+
+  {{ xsrf_form_html() }}
+
+  <fieldset>
+
+    <legend>{{ _('Edit Feed') }}</legend>
+
+    <ul>
+      <li>
+      <input type="hidden" id="id" name="id" value="{{ feed.id }}" />
+      <li>
+        <label for="name">{{ _('Name') }}</label>
+        <input type="text" id="name" name="name" class="required" value="{{ feed.title }}" />
+      </li>
+
+      <li>
+        <label for="url">{{ _('Url') }}</label>
+        <input type="text" id="url" name="url" class="required long" value="{{ feed.url }}" />
+      </li>
+
+      <li>
+        <input type="submit" value="{{ _('Edit') }}" />
+        <a class="button" href="/feeds/delete/{{ feed.id }}/">Delete</a>
+      </li>
+    </ul>
+</form>
+
+{% endblock %}

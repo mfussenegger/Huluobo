@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 from tornado.web import RequestHandler, HTTPError
-from schema import Session
+from schema import Session, Feed
 from jinja2 import TemplateNotFound
 
 class Base(RequestHandler):
@@ -21,7 +21,12 @@ class Base(RequestHandler):
                 Session.close()
 
     def render(self, template, **kwds):
-        template = self.env.get_template(template)
+        try:
+            template = self.env.get_template(template)
+        except TemplateNotFound:
+            raise HTTPError(404)
+        kwds['feeds'] = Session.query(Feed).order_by(Feed.title)
+        self.env.globals['request']  = self.request
         self.env.globals['static_url'] = self.static_url
         self.env.globals['xsrf_form_html'] = self.xsrf_form_html
         self.write(template.render(kwds))

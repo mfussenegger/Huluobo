@@ -11,7 +11,9 @@ from jinja2 import Environment, FileSystemLoader
 from os.path import dirname, join, isfile
 
 from base import NoDestinationHandler
-from handler import (Index, Refresh, MarkAsRead)
+from handler import (Index, Refresh, MarkAsRead, FeedAdd, FeedEdit, FeedDelete)
+
+from config import cookie_secret
 
 define('port', default=8080, help='run on the given port', type=int)
 
@@ -21,6 +23,9 @@ class Application(tornado.web.Application):
         
         handlers = (
                 (r'/', Index)
+                ,(r'/feeds/edit/([0-9]+)/?', FeedEdit)
+                ,(r'/feeds/delete/([0-9]+)/?', FeedDelete)
+                ,(r'/feeds/add/?', FeedAdd)
                 ,(r'/refresh/?', Refresh)
                 ,(r'/mark_as_read/?', MarkAsRead)
                 ,(r'/static/(.*)', tornado.web.StaticFileHandler,
@@ -32,6 +37,7 @@ class Application(tornado.web.Application):
                 debug = isfile(join(dirname(__file__), 'debug')),
                 xsrf_cookies = True,
                 static_path = static_path,
+                cookie_secret = cookie_secret
             )
 
         template_path = join(dirname(__file__), 'templates')
@@ -45,7 +51,7 @@ class Application(tornado.web.Application):
 def main():
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
-    http_server.listen(options.port)
+    http_server.listen(options.port, '127.0.0.1')
     print('Starting Tornado on port %d' % options.port)
     tornado.ioloop.IOLoop.instance().start()
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-from sqlalchemy import (create_engine, MetaData, Table, Column, Integer, String, ForeignKey,
-        Unicode, DateTime, UnicodeText, Boolean)
+from sqlalchemy import (create_engine, MetaData, Table, Column, Integer,
+        String, ForeignKey, Unicode, DateTime, UnicodeText, Boolean)
 from sqlalchemy.orm import mapper, scoped_session, sessionmaker
 from datetime import datetime
 from config import url, params

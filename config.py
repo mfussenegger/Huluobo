@@ -17,3 +17,5 @@ params = {
         'echo' : False,
         #'encoding' : 'latin1',
 }
+
+cookie_secret = 'asdf892'
