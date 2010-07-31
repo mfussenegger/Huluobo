@@ -7,7 +7,7 @@ from schema import Session, Feed, Post
 from datetime import datetime as dt
 from datetime import timedelta
 from time import mktime, sleep
-from multiprocessing import Process
+from multiprocessing import Process, Lock
 
 import feedparser
 
@@ -62,7 +62,7 @@ class MarkAsRead(Base):
         self.redirect('/')
         return
 
-def parse_feed(session, lfeed):
+def parse_feed(lock ,session, lfeed):
     d = feedparser.parse(lfeed.url)
     rfeed_updated = d.feed.get('updated_parsed', None) or \
             d.feed.get('date_parsed', None)
@@ -82,7 +82,7 @@ def parse_feed(session, lfeed):
         if rpost_updated:
             rpost_updated = dt.fromtimestamp(mktime(rpost_updated))
         else:
-            rpost_updated = rpost_pubd
+            continue # TODO: fix
 
         lpost = session.query(Post).filter(
                     Post.entry_id == rpost.id and 
@@ -104,6 +104,9 @@ def parse_feed(session, lfeed):
         lpost.content = rpost.has_key('content') and \
             rpost.content[0].value
     lfeed.updated = rfeed_updated
+    lock.acquire()
+    session.commit()
+    lock.release()
 
 class Refresh(Base):
     def get(self):
@@ -111,11 +114,11 @@ class Refresh(Base):
                 dt.now() - timedelta(days=max_post_age) ).delete()
         Session.commit()
         procs = []
+        lock = Lock()
         for lfeed in Session.query(Feed).all():
-            p = Process(target=parse_feed, args=(Session, lfeed))
+            p = Process(target=parse_feed, args=(lock, Session, lfeed))
             p.start()
             procs.append(p)
         while any( p.is_alive() for p in procs):
             sleep(0.05)
-        Session.commit()
         return self.redirect('/')
