@@ -19,3 +19,4 @@ params = {
 }
 
 cookie_secret = 'asdf892'
+max_post_age = 30
