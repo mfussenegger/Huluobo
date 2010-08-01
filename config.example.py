@@ -15,7 +15,7 @@
 url = 'sqlite:///foo.db'
 params = {
         'echo' : False,
-        #'encoding' : 'latin1',
+        'encoding' : 'utf-8',
 }
 
 cookie_secret = 'asdf892'

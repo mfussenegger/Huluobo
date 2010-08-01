@@ -13,7 +13,7 @@ metadata = MetaData()
 
 feeds_table = Table('feeds', metadata
         ,Column('id', Integer, primary_key=True, autoincrement=True)
-        ,Column('title', Unicode(30), nullable=False)
+        ,Column('title', Unicode(40), nullable=False)
         ,Column('url', String(2038), nullable=False)
         ,Column('updated', DateTime, nullable=True)
         ,Column('description', Unicode(300))
@@ -26,7 +26,7 @@ posts_table = Table('posts', metadata,
         Column('id', Integer, primary_key=True, autoincrement=True),
         Column('feed_id', ForeignKey('feeds.id'), nullable=False),
         Column('entry_id', String(300), nullable=False),
-        Column('title', Unicode(40), nullable=False),
+        Column('title', Unicode(80), nullable=False),
         Column('link', String(2038), nullable=False),
         Column('author', Unicode(40), nullable=False),
         Column('summary', UnicodeText),
