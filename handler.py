@@ -7,7 +7,11 @@ from schema import Session, Feed, Post
 from datetime import datetime as dt
 from datetime import timedelta
 from time import mktime, sleep
-from multiprocessing import Process, Lock
+try:
+    from multiprocessing import Process, Lock
+except ImportError:
+    print('multiprocessing not found: fallback to threading')
+    from threading import Thread as Process, Lock
 
 import feedparser
 
@@ -114,6 +118,8 @@ class Refresh(Base):
         for lfeed in Session.query(Feed):
             p = Process(target=parse_feed, args=(lock, Session, lfeed))
             p.start()
+            if not hasattr(p, 'is_alive'):
+                p.is_alive = p.isAlive
             procs.append(p)
         while any( p.is_alive() for p in procs):
             sleep(0.05)
