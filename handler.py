@@ -16,7 +16,7 @@ from config import max_post_age
 class Index(Base):
     def get(self):
         posts = Session.query(Post).filter_by(read=False).order_by(desc(
-                    Post.published)).all()
+                    Post.published))
         return self.render('index.html', posts=posts)
 
 class FeedDelete(Base):
@@ -56,7 +56,7 @@ class FeedAdd(Base):
 
 class MarkAsRead(Base):
     def get(self):
-        for post in Session.query(Post).filter_by(read=False).all():
+        for post in Session.query(Post).filter_by(read=False):
             post.read = True
         Session.commit()
         self.redirect('/')
@@ -82,11 +82,9 @@ def parse_feed(lock ,session, lfeed):
         if rpost_updated:
             rpost_updated = dt.fromtimestamp(mktime(rpost_updated))
 
-        lock.acquire()
         lpost = session.query(Post).filter(
                     Post.entry_id == rpost.id and 
-                    Post.feed_id == lfeed.id).first()
-        lock.release()
+                    Post.feed_id == lfeed.id).with_lockmode("update").first()
         if lpost:
             if lpost.updated == rpost_updated:
                 continue
@@ -104,9 +102,7 @@ def parse_feed(lock ,session, lfeed):
         lpost.content = rpost.has_key('content') and \
             rpost.content[0].value
     lfeed.updated = rfeed_updated
-    lock.acquire()
     session.commit()
-    lock.release()
 
 class Refresh(Base):
     def get(self):
@@ -115,7 +111,7 @@ class Refresh(Base):
         Session.commit()
         procs = []
         lock = Lock()
-        for lfeed in Session.query(Feed).all():
+        for lfeed in Session.query(Feed):
             p = Process(target=parse_feed, args=(lock, Session, lfeed))
             p.start()
             procs.append(p)
