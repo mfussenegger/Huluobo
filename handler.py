@@ -81,14 +81,14 @@ def parse_feed(lock ,session, lfeed):
 
         if rpost_updated:
             rpost_updated = dt.fromtimestamp(mktime(rpost_updated))
-        else:
-            continue # TODO: fix
 
+        lock.acquire()
         lpost = session.query(Post).filter(
                     Post.entry_id == rpost.id and 
                     Post.feed_id == lfeed.id).first()
+        lock.release()
         if lpost:
-            if rpost_updated and lpost.updated == rpost_updated:
+            if lpost.updated == rpost_updated:
                 continue
         else:
             lpost = Post()
