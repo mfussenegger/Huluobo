@@ -13,9 +13,9 @@ except ImportError:
     print('multiprocessing not found: fallback to threading')
     from threading import Thread as Process, Lock
 
-import feedparser
-
 from config import max_post_age
+
+from parser import parse_one
 
 class Index(Base):
     def get(self):
@@ -30,6 +30,7 @@ class FeedDelete(Base):
         Session.query(Post).filter_by(feed_id=id).delete()
         Session.query(Feed).filter_by(id=id).delete()
         Session.commit()
+        Session.close()
         return self.redirect('/')
 
 class FeedEdit(Base):
@@ -42,6 +43,7 @@ class FeedEdit(Base):
         feed.title = self.get_argument('name')
         feed.url = self.get_argument('url')
         Session.commit()
+        Session.close()
         return self.redirect('/')
 
 class FeedAdd(Base):
@@ -63,60 +65,18 @@ class MarkAsRead(Base):
         for post in Session.query(Post).filter_by(read=False):
             post.read = True
         Session.commit()
-        self.redirect('/')
-        return
-
-def parse_feed(lock ,session, lfeed):
-    d = feedparser.parse(lfeed.url)
-    rfeed_updated = d.feed.get('updated_parsed', None) or \
-            d.feed.get('date_parsed', None)
-    if rfeed_updated:
-        rfeed_updated = dt.fromtimestamp(mktime(rfeed_updated))
-
-    if rfeed_updated and lfeed.updated == rfeed_updated:
-        return
-    for rpost in d.entries:
-        rpost_pubd = rpost.get('published_parsed', None)
-        rpost_pubd = rpost_pubd and dt.fromtimestamp(mktime(
-            rpost.published_parsed)) or dt.now()
-
-        rpost_updated = rpost.get('updated_parsed', None) or \
-                rpost.get('date_parsed', None)
-
-        if rpost_updated:
-            rpost_updated = dt.fromtimestamp(mktime(rpost_updated))
-
-        lpost = session.query(Post).filter(
-                    Post.entry_id == rpost.id and 
-                    Post.feed_id == lfeed.id).with_lockmode("update").first()
-        if lpost:
-            if lpost.updated == rpost_updated:
-                continue
-        else:
-            lpost = Post()
-            lfeed.posts.append(lpost)
-        lpost.read = False
-        lpost.entry_id = rpost.id
-        lpost.title = rpost.title
-        lpost.author = d.feed.get('author', 'unknown')
-        lpost.link = rpost.link
-        lpost.published = rpost_pubd
-        lpost.updated = rpost_updated
-        lpost.summary = rpost.get('summary')
-        lpost.content = rpost.has_key('content') and \
-            rpost.content[0].value
-    lfeed.updated = rfeed_updated
-    session.commit()
+        Session.close()
+        return self.redirect('/')
 
 class Refresh(Base):
     def get(self):
         Session.query(Post).filter(Post.updated <=
                 dt.now() - timedelta(days=max_post_age) ).delete()
-        Session.commit()
+        feeds = Session.query(Feed.id).all()
+        Session.close()
         procs = []
-        lock = Lock()
-        for lfeed in Session.query(Feed):
-            p = Process(target=parse_feed, args=(lock, Session, lfeed))
+        for feed in feeds:
+            p = Process(target=parse_one, args=(feed.id,))
             p.start()
             if not hasattr(p, 'is_alive'):
                 p.is_alive = p.isAlive
