@@ -27,7 +27,6 @@ def parse_one(id):
     Session = session()
 
     feed = Session.query(Feed).filter_by(id=id).one()
-    print feed.title
     parser = feedparser.parse(feed.url)
 
     updated = parser.feed.get('updated_parsed', None) \
@@ -38,23 +37,21 @@ def parse_one(id):
     if updated and feed.updated == updated:
         return # already up to date
 
-    feed.updated = updated
-
     for post in parser.entries:
         pubdate = post.get('published_parsed', None) \
                 or post.get('date_parsed', None)
         pubdate = pubdate and dt.fromtimestamp(mktime(pubdate)) or dt.utcnow()
 
         updated = post.get('updated_parsed', None)
-        updated = updated and dt.fromtimestamp(mktime(updated)) or pubdate
+        updated = updated and dt.fromtimestamp(mktime(updated))
 
         try:
             p = Session.query(Post).filter(
                     Post.entry_id == post.id and
                     Post.feed_id == feed.id).one()
 
-            if p.updated == updated:
-                return
+            if not updated or p.updated == updated:
+                continue
         except NoResultFound:
             p = Post()
             feed.posts.append(p)
@@ -64,9 +61,10 @@ def parse_one(id):
         p.link = post.link
         p.author = parser.feed.get('author', 'None')
         p.published = pubdate
-        p.updated == updated
+        p.updated = updated
         p.summary = post.get('summary', '')
 
+    feed.updated = updated
     Session.commit()
     Session.close()
 
