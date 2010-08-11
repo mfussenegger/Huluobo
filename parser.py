@@ -18,7 +18,9 @@ session = sessionmaker(create_engine(url, **params))
 
 def parse_all():
     Session = session()
-    for feed in Session.query(Feed):
+    feeds = Session.query(Feed.id).all()
+    Session.close()
+    for feed in feeds:
         parse_one(feed.id)
 
 def parse_one(id):
@@ -66,6 +68,7 @@ def parse_one(id):
         p.summary = post.get('summary', '')
 
     Session.commit()
+    Session.close()
 
 
 if __name__ == '__main__':
