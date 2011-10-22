@@ -67,7 +67,7 @@ mapper(Post, posts_table)
 mapper(Tag, tags_table)
 
 def main():
-    if raw_input('Type YES to drop and recreate all tables: ') == 'YES':
+    if input('Type YES to drop and recreate all tables: ') == 'YES':
         metadata.drop_all(engine)
         print('Dropped tables.')
         metadata.create_all(engine)

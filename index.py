@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 import tornado.web
 import tornado.httpserver
@@ -11,8 +11,8 @@ from jinja2 import Environment, FileSystemLoader
 from os.path import dirname, join, isfile
 
 from base import NoDestinationHandler
-from handler import (Index, Refresh, MarkAsRead, FeedAdd, FeedEdit, FeedDelete)
 
+from handler import (Index, Refresh, MarkAsRead, FeedAdd, FeedEdit, FeedDelete)
 from config import cookie_secret
 
 define('port', default=8080, help='run on the given port', type=int)
@@ -20,7 +20,7 @@ define('port', default=8080, help='run on the given port', type=int)
 class Application(tornado.web.Application):
     def __init__(self):
         static_path = join(dirname(__file__), 'static')
-        
+
         handlers = (
                 (r'/', Index)
                 ,(r'/feeds/edit/([0-9]+)/?', FeedEdit)

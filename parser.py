@@ -26,7 +26,7 @@ def parse_all():
 def parse_one(id):
     Session = session()
 
-    feed = Session.query(Feed).filter_by(id=id).one()
+    feed = Session.query(Feed).get(id)
     parser = feedparser.parse(feed.url)
 
     updated = parser.feed.get('updated_parsed', None) \
