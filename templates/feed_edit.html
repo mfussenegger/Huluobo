@@ -22,24 +22,18 @@
 
     <legend>{{ _('Edit Feed') }}</legend>
 
-    <ul>
-      <li>
-      <input type="hidden" id="id" name="id" value="{{ feed.id }}" />
-      <li>
-        <label for="name">{{ _('Name') }}</label>
-        <input type="text" id="name" name="name" class="required" value="{{ feed.title }}" />
-      </li>
+    <input type="hidden" id="id" name="id" value="{{ feed.id }}" />
+    <label for="name">{{ _('Name') }}</label>
+    <input type="text" id="name" name="name" class="required" value="{{ feed.title }}" />
 
-      <li>
-        <label for="url">{{ _('Url') }}</label>
-        <input type="text" id="url" name="url" class="required long" value="{{ feed.url }}" />
-      </li>
+    <label for="url">{{ _('Url') }}</label>
+    <input type="text" id="url" name="url" class="required long" value="{{ feed.url }}" />
 
-      <li>
-        <input type="submit" value="{{ _('Edit') }}" />
-        <a class="button" href="/feeds/delete/{{ feed.id }}/">Delete</a>
-      </li>
-    </ul>
+    <div class="form-actions">
+        <input class="btn btn-primary" type="submit" value="{{ _('Edit') }}" />
+        <a class="btn btn-small btn-danger" href="/feeds/delete/{{ feed.id }}/">Delete</a>
+    </div>
+  </fieldSet>
 </form>
 
 {% endblock %}

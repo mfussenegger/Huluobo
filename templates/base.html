@@ -2,17 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
       {{ cfg.title }}
     </title>
 
     <!-- <link rel="shortcut icon" href="/favicon.ico"> -->
-    {% if cfg.debug %}
-      <link rel="stylesheet" href="{{ static_url('css/reset.css') }}" >
-      <link rel="stylesheet" href="{{ static_url('css/styles.css') }}" >
-    {% else %}
-      <link rel="stylesheet" href="{{ static_url('css/all.css') }}" >
-    {% endif %}
+    <link rel="stylesheet" href="{{ static_url('css/style.css') }}" >
 
     {% if cfg.debug %}
       <script type="text/javascript" text="javascript" src="{{ static_url('js/jquery.js') }}" ></script>
@@ -26,41 +22,44 @@
   </head>
 
   <body>
-    <div id="page">
-      <div id="menu_top">
-        <ul>
-          <li>
-            <a href="/">{{ _('Index') }}</a>
-          </li>
-          <li>
-            <a href="/refresh/">{{ _('Refresh') }}</a>
-          </li>
-          <li>
-            <a href="/mark_as_read/">{{ _('Mark everything as read') }}</a>
-          </li>
-          <li>
-            <a href="/feeds/add">{{ _('Add Feed') }}</a>
-          </li>
-        </ul>
-      </div>
+    <div class="container-fluid" id="page">
+      <div class="row-fluid">
+        <div class="span2">
+          <ul class="nav nav-list">
+            <li class="nav-header">Feeds</li>
+            {% for feed in feeds %}
+            <li><a href="/feeds/edit/{{ feed.id }}/">{{ feed.title|e }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
 
-      <div id="menu_left">
+        <div class="span10">
 
-        <ul id="feed_list">
-          {% for feed in feeds %}
-          <li><a href="/feeds/edit/{{ feed.id }}/">{{ feed.title|e }}</a></li>
-          {% endfor %}
-        </ul>
+          <div class="row-fluid">
+            <div class="btn-toolbar navbar-static-top">
+              <div class="btn-group">
+                  <a class="btn" href="/"><i class="icon-home" ></i> {{ _('Index') }}</a> 
+                  <a class="btn" href="/refresh/"><i class="icon-refresh"></i> {{ _('Refresh') }}</a>
+                  <a class="btn" href="/mark_as_read/"><i class="icon-ok-sign"></i> {{ _('Mark everything as read') }}</a>
+                  <a class="btn" href="/feeds/add"><i class="icon-plus"></i> {{ _('Add Feed') }}</a> 
+              </div>
+            </div>
+          </div>
 
-      </div>
+          <br />
+          <br />
 
-      <div id="content">
-        {% block content %}
-        {% endblock %}
-        <a href="#page">back to top</a>
+          <div class="row-fluid content">
+            {% block content %}
+            {% endblock %}
+            <a class="btn btn-small" href="#page">back to top</a>
+          </div>
+          <br />
+          <br />
+
+        </div>
       </div>
 
     </div>
-
   </body>
 </html>

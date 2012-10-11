@@ -54,7 +54,7 @@ class Application(tornado.web.Application):
 def main():
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
-    http_server.listen(options.port, '127.0.0.1')
+    http_server.listen(options.port, '0.0.0.0')
     print('Starting Tornado on http://localhost:%d/' % options.port)
     try:
         tornado.ioloop.IOLoop.instance().start()

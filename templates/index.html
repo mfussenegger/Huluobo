@@ -4,13 +4,16 @@
 
   {% for post in posts %}
 
-    <div>
-      <h2><a href="{{ post.link }}">{{ post.title }}</a></h2>
-      <p>{{ post.summary }}</p>
-    </div>
+    <article>
+      <header>
+        <h4><a href="{{ post.link }}">{{ post.title }}</a></h4>
+      </header>
+      <p>
+        {{ post.summary }}
+      </p>
+    </article>
 
     <hr>
-
   {% endfor %}
 
 {% endblock %}
