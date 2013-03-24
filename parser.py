@@ -57,9 +57,9 @@ def parse_one(id):
             feed.posts.append(p)
         p.read = False
         p.entry_id = post.id
-        p.title = post.title
+        p.title = post.title[:400]
         p.link = post.link
-        p.author = parser.feed.get('author', 'None')
+        p.author = parser.feed.get('author', 'None')[:80]
         p.published = pubdate
         p.updated = updated
         p.summary = post.get('summary', '')
