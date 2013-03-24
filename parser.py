@@ -4,15 +4,13 @@
 import sys
 import feedparser
 import logging
+import requests
 
 from concurrent import futures
-
 from datetime import datetime as dt
 from time import mktime
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from config import url, params
 from schema import Feed, Post
 
@@ -40,7 +38,8 @@ def parse_one(id):
     logger.debug('Query feed %s', id)
     feed = Session.query(Feed).get(id)
     logger.debug('Parse feed %s: %s', id, feed.url)
-    parser = feedparser.parse(feed.url)
+    resp = requests.get(feed.url, timeout=2)
+    parser = feedparser.parse(resp.content)
     logger.debug('Got %s posts', len(parser.entries))
 
     updated = (parser.feed.get('updated_parsed', None)
