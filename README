@@ -7,3 +7,5 @@ Requirements:
     python-feedparser
     python-jinja >= 2.5
     python-sqlalchemy >= 0.6 (might work with 0.5 too)
+
+    futures (if not on python 3)
