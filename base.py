@@ -3,7 +3,7 @@
 
 from tornado.web import RequestHandler, HTTPError
 from schema import Session, Feed
-from jinja2 import TemplateNotFound
+from jinja2.exceptions import TemplateNotFound
 
 
 class Base(RequestHandler):

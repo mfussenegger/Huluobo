@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import logging
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
@@ -42,6 +43,10 @@ class Application(tornado.web.Application):
             static_path=static_path,
             cookie_secret=cookie_secret
         )
+
+        logger = logging.getLogger('huluobo')
+        if settings['debug']:
+            logger.setLevel(logging.DEBUG)
 
         template_path = join(dirname(__file__), 'templates')
         tornado.web.Application.__init__(self, handlers, **settings)
