@@ -13,6 +13,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from config import url, params
 from schema import Feed, Post
+from concurrent import futures
 
 session = sessionmaker(create_engine(url, **params))
 
@@ -23,6 +24,12 @@ def parse_all():
     Session.close()
     for feed in feeds:
         parse_one(feed.id)
+
+
+def parse_all_with_callback(ids, callback):
+    with futures.ProcessPoolExecutor() as executor:
+        executor.map(parse_one, ids, timeout=5)
+    callback()
 
 
 def parse_one(id):
