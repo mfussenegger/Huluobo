@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 import sys
 import feedparser
@@ -16,6 +16,7 @@ from schema import Feed, Post
 
 session = sessionmaker(create_engine(url, **params))
 
+
 def parse_all():
     Session = session()
     feeds = Session.query(Feed.id).all()
@@ -23,23 +24,24 @@ def parse_all():
     for feed in feeds:
         parse_one(feed.id)
 
+
 def parse_one(id):
     Session = session()
 
     feed = Session.query(Feed).get(id)
     parser = feedparser.parse(feed.url)
 
-    updated = parser.feed.get('updated_parsed', None) \
-            or parser.feed.get('date_parsed', None)
+    updated = (parser.feed.get('updated_parsed', None)
+               or parser.feed.get('date_parsed', None))
     if updated:
         updated = dt.fromtimestamp(mktime(updated))
 
     if updated and feed.updated == updated:
-        return # already up to date
+        return  # already up to date
 
     for post in parser.entries:
-        pubdate = post.get('published_parsed', None) \
-                or post.get('date_parsed', None)
+        pubdate = (post.get('published_parsed', None)
+                   or post.get('date_parsed', None))
         pubdate = pubdate and dt.fromtimestamp(mktime(pubdate)) or dt.utcnow()
 
         updated = post.get('updated_parsed', None)
@@ -47,9 +49,7 @@ def parse_one(id):
 
         try:
             p = Session.query(Post).filter(
-                    Post.entry_id == post.id and
-                    Post.feed_id == feed.id).one()
-
+                (Post.entry_id == post.id and Post.feed_id == feed.id)).one()
             if not updated or p.updated == updated:
                 continue
         except NoResultFound:
@@ -74,4 +74,3 @@ if __name__ == '__main__':
         parse_all()
     else:
         parse_one(sys.argv[1])
-
