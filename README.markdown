@@ -2,7 +2,7 @@
 
 A very minimalistic RSS reader.
 
-![screenshot](https://github.com/mfussenegger/Huluobo/raw/master/docs/screenshot.png)
+![screenshot](https://github.com/mfussenegger/Huluobo/raw/master/docs/huluobo.png)
 
 
 ## Installation
