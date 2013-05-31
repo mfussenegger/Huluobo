@@ -12,7 +12,7 @@ Requirements:
  - python33 (recommended) or
  - python27
 
-For Python27 see requirements27.txt
+For Python27 see requirements27.txt  
 For Python33 see requirements.txt
 
     pip install -r requirements.txt
