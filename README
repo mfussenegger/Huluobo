@@ -1,11 +1,22 @@
+# Huluobo
 
-When I am grown up I will become an atom/rss reader. Pretty awesome, huh?
+A very minimalistic RSS reader.
+
+![screenshot](https://github.com/mfussenegger/Huluobo/raw/master/docs/screenshot.png)
+
+
+## Installation
 
 Requirements:
-    python >= 2.5  (at least 2.6 recommended)
-    python-tornadoweb
-    python-feedparser
-    python-jinja >= 2.5
-    python-sqlalchemy >= 0.6 (might work with 0.5 too)
 
-    futures (if not on python 3)
+ - python33 (recommended) or
+ - python27
+
+For Python27 see requirements27.txt
+For Python33 see requirements.txt
+
+    pip install -r requirements.txt
+
+## Run Huluobo
+
+    python index.py --port=8000
