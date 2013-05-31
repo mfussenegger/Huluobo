@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from tornado.web import asynchronous
-from tornado import gen
-
+from concurrent import futures
 from sqlalchemy import desc
 from base import Base
 from schema import Session, Feed, Post
@@ -11,8 +9,7 @@ from datetime import datetime as dt
 from datetime import timedelta
 
 from config import max_post_age
-
-from parser import parse_all_with_callback
+from parser import parse_one
 
 
 class Index(Base):
@@ -72,12 +69,12 @@ class MarkAsRead(Base):
 
 
 class Refresh(Base):
-    @asynchronous
-    @gen.engine
     def get(self):
         Session.query(Post).filter(
             Post.updated <= dt.now() - timedelta(days=max_post_age)).delete()
         feeds = Session.query(Feed.id).all()
         Session.close()
-        __ = yield gen.Task(parse_all_with_callback, (f.id for f in feeds))
-        return self.redirect('/')
+        with futures.ProcessPoolExecutor() as executor:
+            list(executor.map(parse_one, (f.id for f in feeds), timeout=5))
+        self.redirect('/')
+        return

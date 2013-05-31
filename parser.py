@@ -6,7 +6,6 @@ import feedparser
 import logging
 import requests
 
-from concurrent import futures
 from datetime import datetime as dt
 from time import mktime
 from sqlalchemy import create_engine
@@ -24,12 +23,6 @@ def parse_all():
     Session.close()
     for feed in feeds:
         parse_one(feed.id)
-
-
-def parse_all_with_callback(ids, callback):
-    with futures.ProcessPoolExecutor() as executor:
-        executor.map(parse_one, ids, timeout=5)
-    callback()
 
 
 def parse_one(id):
