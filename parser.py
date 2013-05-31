@@ -32,7 +32,7 @@ def parse_one(id):
     feed = Session.query(Feed).get(id)
     logger.debug('Parse feed %s: %s', id, feed.url)
     try:
-        resp = requests.get(feed.url, timeout=5)
+        resp = requests.get(feed.url, timeout=10, verify=False)
     except requests.exceptions.Timeout:
         return
     parser = feedparser.parse(resp.content)

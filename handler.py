@@ -75,6 +75,6 @@ class Refresh(Base):
         feeds = Session.query(Feed.id).all()
         Session.close()
         with futures.ProcessPoolExecutor() as executor:
-            list(executor.map(parse_one, (f.id for f in feeds), timeout=5))
+            list(executor.map(parse_one, (f.id for f in feeds), timeout=10))
         self.redirect('/')
         return
