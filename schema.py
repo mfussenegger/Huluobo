@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 from sqlalchemy import (
     create_engine, MetaData, Table, Column, Integer, String, ForeignKey,
     Unicode, DateTime, UnicodeText, Boolean)
 from sqlalchemy.orm import mapper, scoped_session, sessionmaker, relation
 from config import url, params
+
+
+if sys.version_info.major < 3:
+    input = raw_input
 
 engine = create_engine(url, **params)
 Session = scoped_session(sessionmaker(engine))
