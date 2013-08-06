@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from concurrent import futures
+from multiprocessing import Pool
 from sqlalchemy import desc
 from base import Base
 from schema import Session, Feed, Post
@@ -74,7 +74,9 @@ class Refresh(Base):
             Post.updated <= dt.now() - timedelta(days=max_post_age)).delete()
         feeds = Session.query(Feed.id).all()
         Session.close()
-        with futures.ProcessPoolExecutor() as executor:
-            list(executor.map(parse_one, (f.id for f in feeds), timeout=10))
+        p = Pool(10)
+        p.map_async(parse_one, (f.id for f in feeds))
+        p.close()
+        p.join()
         self.redirect('/')
         return
